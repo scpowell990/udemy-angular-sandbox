@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Post } from '../../models/Posts'
 import { PostService } from '../../services/post.service';
-import { currentId } from 'async_hooks';
+
 
 @Component({
   selector: 'app-posts',
