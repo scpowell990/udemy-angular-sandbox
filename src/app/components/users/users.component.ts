@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { User } from '../../models/User';
+import { buildPath } from 'selenium-webdriver/http';
+
+import { UserService } from '../../services/user.service'
 
 @Component({
   selector: 'app-users',
@@ -8,53 +11,58 @@ import { User } from '../../models/User';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit {
+  user: User = {
+    firstName: '',
+    lastName: '',
+    email: ''
+  }
   users: User[];
   showExtended: boolean = true;
   loaded: boolean = false;
-  enableAdd: boolean = true;
-  constructor() { }
+  enableAdd: boolean = false;
+  showUserForm: boolean = false;
+
+  @ViewChild('userForm', {static:true}) form: any;
+
+  data: any;
+
+  constructor(private userService: UserService) { }
+
   ngOnInit() {
-    this.users = [
-      {
-        firstName: 'John',
-        lastName: 'Doe',
-        age: 70,
-        address: {
-          street: '50 Main st',
-          city: 'Boston',
-          state: 'MA'
-        },
-        isActive: true,
-        registered: new Date('01/02/2018 08:30:00')
-      },
-      {
-        firstName: 'Kevin',
-        lastName: 'Johnson',
-        age: 34,
-        address: {
-          street: '20 School st',
-          city: 'Lynn',
-          state: 'MA'
-        },
-        isActive: false,
-        registered: new Date('03/11/2017 06:20:00')
-      },
-      {
-        firstName: 'Karen',
-        lastName: 'Williams',
-        age: 26,
-        address: {
-          street: '55 Mill st',
-          city: 'Miami',
-          state: 'FL'
-        },
-        isActive: true,
-        registered: new Date('11/02/2016 10:30:00')
-      }
-    ];
-    this.loaded = true;
+
+  
+    this.userService.getUsers().subscribe(data=>{
+      this.users = data
+      this.loaded = true;
+    });
+
+    
+
+    
   }
-  addUser(user: User) {
-    this.users.push(user);
+
+  onSubmit({ value, valid }: { value: User, valid: boolean }) {
+
+    if (!valid) {
+      console.log("form is not valid");
+    } else {
+      value.isActive = true;
+      value.registered = new Date();
+      value.hide = true
+
+      this.userService.addUser(value)
+
+      this.form.reset();
+    }
+
+
+
   }
+
+  // fireEvent(e){
+  //   console.log(e.target.value);
+  //   console.log(e.type);
+  // }
+
+
 }

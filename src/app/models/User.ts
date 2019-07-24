@@ -1,14 +1,12 @@
+import { EmailValidator } from '@angular/forms';
+
 export interface User {
     firstName: string,
     lastName: string,
-    age?: number,
-    address?: {
-        street: string,
-        city: string,
-        state: string
-    },
+    email: string,
     isActive?: boolean,
-    registered? : any
+    registered?: any
+    hide?: boolean
 }
 
 // '?' == optional
